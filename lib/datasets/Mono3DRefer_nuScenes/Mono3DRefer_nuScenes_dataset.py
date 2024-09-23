@@ -1,9 +1,3 @@
-"""
-Mono3DVG (https://github.com/ZhanYang-nwpu/Mono3DVG)
-@ Paper: https://arxiv.org/pdf/2312.08022.pdf
-@ Dataset: https://drive.google.com/drive/folders/1ICBv0SRbRIUnl_z8DVuH8lz7KQt580EI?usp=drive_link
-"""
-
 import os
 import ast
 import numpy as np
@@ -32,17 +26,10 @@ class Mono3DRefer_nuScenes_Dataset(data.Dataset):
         self.lstm = False
         self.query_len = 110
         self.tokenizer = BertTokenizer.from_pretrained(bert_model, do_lower_case=True)
-        # self.cls2id = {'pedestrian': 0, 'car': 1, 'cyclist': 2,'van':3, 'truck':4, 'tram':5, 'bus':6,
-        #                'person_sitting':7, 'motorcyclist':8 }
         self.cls2id = {'Vehicle': 0, 'Pedestrian': 1,  'Cycle': 2, 'Traffic element': 3, 'Others': 4}
-        # self.cls2id = {'pedestrian': 0, 'car': 1, 'cyclist': 2, 'van': 3, 'truck': 4, 'trailer': 5, 'bus': 6,
-        #                'person_sitting': 7, 'motorcycle': 8}
         self.class_name = len(self.cls2id)
 
-        # self.resolution = np.array([1280, 384])  #yuanlaide
-        # self.resolution = np.array([910, 512])
         self.resolution = np.array([910, 512])
-        # self.resolution = np.array([682, 384])
         #W * H
         self.use_3d_center = cfg.get('use_3d_center', True)
 
