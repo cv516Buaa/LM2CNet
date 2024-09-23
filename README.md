@@ -34,7 +34,7 @@ This repo is the implementation of "OVGNet: An Unified Visual-Linguistic Framewo
 ## TODO
 - [x] Release test_dataset
 - [x] Release checkpoints
-- [] Release all_dataset
+- [ ] Release all_dataset
 
 ## Demo Setting
 * **Novel** indicates the **unseen** objects in training.
