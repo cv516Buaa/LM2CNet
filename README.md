@@ -41,9 +41,9 @@ This repo is the implementation of "LM2CNet: Enhancing Monocular 3D Visual Groun
 * Python==3.10 
 * Torch==1.12.1, Torchvision==0.12.0
 * CUDA==11.3
-* checkpoint==[OVGANet](https://drive.google.com/file/d/1auMd9sOpYcAaIelJVKPOKvBYKic7yy4w/view?usp=drive_link)
-* Test_Dataset==[assets](https://drive.google.com/file/d/1a-U9jg_xd2BDMQk8Fk8hJqYBOYS9iv01/view?usp=drive_link)
-* Bert_Pretrain==[assets](https://drive.google.com/file/d/1ee-XVDnqTNj3tBqgc1S2WLFEMY2dv2iU/view?usp=drive_link)
+* checkpoint==[LM2CNet](https://drive.google.com/file/d/1auMd9sOpYcAaIelJVKPOKvBYKic7yy4w/view?usp=drive_link)
+* Test_Dataset==[Test_Dataset](https://drive.google.com/file/d/1a-U9jg_xd2BDMQk8Fk8hJqYBOYS9iv01/view?usp=drive_link)
+* Bert_Pretrain==[Bert](https://drive.google.com/file/d/1ee-XVDnqTNj3tBqgc1S2WLFEMY2dv2iU/view?usp=drive_link)
 
 
 **Please add the Bert_Pretrain into ./roberta-base folder**
