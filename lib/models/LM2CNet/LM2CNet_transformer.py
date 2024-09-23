@@ -269,11 +269,6 @@ class LM2CNetTransformer(nn.Module):
         depth_pos_embed = depth_pos_embed.flatten(2).permute(2, 0, 1)
         # encoder
         memory, text_output = self.encoder(src_flatten, spatial_shapes, level_start_index, valid_ratios, text_memory, text_mask, lvl_pos_embed_flatten, mask_flatten, text_pos=text_pos, depth_pos_embed=depth_pos_embed, mask_depth=mask_depth)
-        ######shiyongl yuanllai de text_memory
-        #
-
-        # text_memory = text_memory + text_output
-
 
         # prepare input for adapter and decoder
         bs, _, c = memory.shape
@@ -299,7 +294,7 @@ class LM2CNetTransformer(nn.Module):
         depth_feat_srcs = depth_feat_orig2adapt.chunk(2, dim=-1)
         depth_adapt_k = depth_feat_srcs[1]
         text_memory = self.sk(text_memory, text_output)
-        # text_memory = (1 - a) * text_memory + a * text_output
+        
         # decoder
         hs, inter_references, inter_references_dim = self.decoder(
             tgt,
