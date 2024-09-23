@@ -1,9 +1,3 @@
-"""
-LM2CNet (https://github.com/ZhanYang-nwpu/LM2CNet)
-@ Paper: https://arxiv.org/pdf/2312.08022.pdf
-@ Dataset: https://drive.google.com/drive/folders/1ICBv0SRbRIUnl_z8DVuH8lz7KQt580EI?usp=drive_link
-"""
-
 import torch
 import torch.nn.functional as F
 from torch import nn
@@ -15,7 +9,7 @@ from utils.misc import (NestedTensor, nested_tensor_from_tensor_list,
                             accuracy, get_world_size, interpolate,
                             is_dist_avail_and_initialized, inverse_sigmoid)
 
-# from .swin_transformer.backbone import build_backbone
+# from .swin.backbone import build_backbone
 from .backbone import build_backbone
 from .matcher import build_matcher
 from .LM2CNet_transformer import build_LM2CNet_trans
@@ -29,10 +23,10 @@ def _get_clones(module, N):
     return nn.ModuleList([copy.deepcopy(module) for i in range(N)])
 
 
-class LM2CNet(nn.Module):
-    """ This is the LM2CNet-TR network that performs Monocular 3D Visual Grounding """
+class Mono3DVG(nn.Module):
+    """ This is the Mono3DVG-TR network that performs Monocular 3D Visual Grounding """
 
-    def __init__(self, backbone, LM2CNet_transformer, depth_predictor, num_classes,
+    def __init__(self, backbone, mono3dvg_transformer, depth_predictor, num_classes,
                  num_queries, num_feature_levels,
                  aux_loss=True, with_box_refine=False, init_box=False,
                  text_encoder_type="roberta-base",
@@ -41,7 +35,7 @@ class LM2CNet(nn.Module):
         """ Initializes the model.
         Parameters:
             backbone: torch module of the backbone to be used. See backbone.py
-            LM2CNet_transformer: depth-aware transformer architecture. See depth_aware_transformer.py
+            mono3dvg_transformer: depth-aware transformer architecture. See depth_aware_transformer.py
             num_classes: number of object classes
             num_queries: number of object queries, ie detection slot. This is the maximal number of objects
                          DETR can detect in a single image. For KITTI, we recommend 50 queries.
@@ -49,11 +43,11 @@ class LM2CNet(nn.Module):
             with_box_refine: iterative bounding box refinement
         """
         super().__init__()
- 
+
         self.num_queries = num_queries
-        self.LM2CNet_transformer = LM2CNet_transformer
+        self.mono3dvg_transformer = mono3dvg_transformer
         self.depth_predictor = depth_predictor
-        hidden_dim = LM2CNet_transformer.d_model
+        hidden_dim = mono3dvg_transformer.d_model
         self.num_feature_levels = num_feature_levels
 
         # grounding heads
@@ -105,15 +99,15 @@ class LM2CNet(nn.Module):
             nn.init.constant_(proj[0].bias, 0)
 
         # if two-stage, the last class_embed and bbox_embed is for region proposal generation
-        num_pred = LM2CNet_transformer.decoder.num_layers
+        num_pred = mono3dvg_transformer.decoder.num_layers
         if with_box_refine:
             self.class_embed = _get_clones(self.class_embed, num_pred)
             self.bbox_embed = _get_clones(self.bbox_embed, num_pred)
             nn.init.constant_(self.bbox_embed[0].layers[-1].bias.data[2:], -2.0)
             # hack implementation for iterative bounding box refinement
-            self.LM2CNet_transformer.decoder.bbox_embed = self.bbox_embed
+            self.mono3dvg_transformer.decoder.bbox_embed = self.bbox_embed
             self.dim_embed_3d = _get_clones(self.dim_embed_3d, num_pred)
-            self.LM2CNet_transformer.decoder.dim_embed = self.dim_embed_3d
+            self.mono3dvg_transformer.decoder.dim_embed = self.dim_embed_3d
             self.angle_embed = _get_clones(self.angle_embed, num_pred)
             self.depth_embed = _get_clones(self.depth_embed, num_pred)
         else:
@@ -123,7 +117,7 @@ class LM2CNet(nn.Module):
             self.dim_embed_3d = nn.ModuleList([self.dim_embed_3d for _ in range(num_pred)])
             self.angle_embed = nn.ModuleList([self.angle_embed for _ in range(num_pred)])
             self.depth_embed = nn.ModuleList([self.depth_embed for _ in range(num_pred)])
-            self.LM2CNet_transformer.decoder.bbox_embed = None
+            self.mono3dvg_transformer.decoder.bbox_embed = None
 
         self.tokenizer = RobertaTokenizerFast.from_pretrained(text_encoder_type)
         self.text_encoder = RobertaModel.from_pretrained(text_encoder_type)
@@ -205,7 +199,7 @@ class LM2CNet(nn.Module):
 
         query_embeds = self.query_embed.weight
 
-        hs, init_reference, inter_references, inter_references_dim, enc_outputs_class, enc_outputs_coord_unact = self.LM2CNet_transformer(
+        hs, init_reference, inter_references, inter_references_dim, enc_outputs_class, enc_outputs_coord_unact = self.mono3dvg_transformer(
             srcs, masks, pos, query_embeds, depth_pos_embed, text_memory_resized, text_attention_mask, text_position_emb_resized, im_name, instanceID, ann_id)
 
         # Average Pooling
@@ -296,14 +290,14 @@ class LM2CNet(nn.Module):
         # this is a workaround to make torchscript happy, as torchscript
         # doesn't support dictionary with non-homogeneous values, such
         # as a dict having both a Tensor and a list.
-        return [{'pred_logits': a, 'pred_boxes': b, 
+        return [{'pred_logits': a, 'pred_boxes': b,
                  'pred_3d_dim': c, 'pred_angle': d, 'pred_depth': e}
                 for a, b, c, d, e in zip(outputs_class[:-1], outputs_coord[:-1],
                                          outputs_3d_dim[:-1], outputs_angle[:-1], outputs_depth[:-1])]
 
 
 class SetCriterion(nn.Module):
-    """ This class computes the loss for LM2CNet-TR.
+    """ This class computes the loss for Mono3DVG-TR.
     The process happens in two steps:
         1) we compute hungarian assignment between ground truth boxes and the outputs of the model
         2) we supervise each pair of matched ground-truth / prediction (supervise class and box)
@@ -367,7 +361,7 @@ class SetCriterion(nn.Module):
         return losses
 
     def loss_3dcenter(self, outputs, targets, indices, num_boxes):
-        
+
         idx = self._get_src_permutation_idx(indices)
         src_3dcenter = outputs['pred_boxes'][:, :, 0: 2][idx]
         target_3dcenter = torch.cat([t['boxes_3d'][:, 0: 2][i] for t, (_, i) in zip(targets, indices)], dim=0)
@@ -378,7 +372,7 @@ class SetCriterion(nn.Module):
         return losses
 
     def loss_boxes(self, outputs, targets, indices, num_boxes):
-        
+
         assert 'pred_boxes' in outputs
         idx = self._get_src_permutation_idx(indices)
         src_2dboxes = outputs['pred_boxes'][:, :, 2: 6][idx]
@@ -398,19 +392,19 @@ class SetCriterion(nn.Module):
         losses['loss_giou'] = loss_giou.sum() / num_boxes
         return losses
 
-    def loss_depths(self, outputs, targets, indices, num_boxes):  
+    def loss_depths(self, outputs, targets, indices, num_boxes):
 
         idx = self._get_src_permutation_idx(indices)
         src_depths = outputs['pred_depth'][idx]
         target_depths = torch.cat([t['depth'][i] for t, (_, i) in zip(targets, indices)], dim=0).squeeze()
 
-        depth_input, depth_log_variance = src_depths[:, 0], src_depths[:, 1] 
-        depth_loss = 1.4142 * torch.exp(-depth_log_variance) * torch.abs(depth_input - target_depths) + depth_log_variance  
+        depth_input, depth_log_variance = src_depths[:, 0], src_depths[:, 1]
+        depth_loss = 1.4142 * torch.exp(-depth_log_variance) * torch.abs(depth_input - target_depths) + depth_log_variance
         losses = {}
-        losses['loss_depth'] = depth_loss.sum() / num_boxes 
-        return losses  
-    
-    def loss_dims(self, outputs, targets, indices, num_boxes):  
+        losses['loss_depth'] = depth_loss.sum() / num_boxes
+        return losses
+
+    def loss_dims(self, outputs, targets, indices, num_boxes):
 
         idx = self._get_src_permutation_idx(indices)
         src_dims = outputs['pred_3d_dim'][idx]
@@ -426,7 +420,7 @@ class SetCriterion(nn.Module):
         losses['loss_dim'] = dim_loss.sum() / num_boxes
         return losses
 
-    def loss_angles(self, outputs, targets, indices, num_boxes):  
+    def loss_angles(self, outputs, targets, indices, num_boxes):
 
         idx = self._get_src_permutation_idx(indices)
         heading_input = outputs['pred_angle'][idx]
@@ -446,10 +440,10 @@ class SetCriterion(nn.Module):
         cls_onehot = torch.zeros(heading_target_cls.shape[0], 12).cuda().scatter_(dim=1, index=heading_target_cls.view(-1, 1), value=1)
         heading_input_res = torch.sum(heading_input_res * cls_onehot, 1)
         reg_loss = F.l1_loss(heading_input_res, heading_target_res, reduction='none')
-        
+
         angle_loss = cls_loss + reg_loss
         losses = {}
-        losses['loss_angle'] = angle_loss.sum() / num_boxes 
+        losses['loss_angle'] = angle_loss.sum() / num_boxes
         return losses
 
     def loss_depth_map(self, outputs, targets, indices, num_boxes):
@@ -478,7 +472,7 @@ class SetCriterion(nn.Module):
         return batch_idx, tgt_idx
 
     def get_loss(self, loss, outputs, targets, indices, num_boxes, **kwargs):
-        
+
         loss_map = {
             'labels': self.loss_labels,
             'cardinality': self.loss_cardinality,
@@ -581,12 +575,12 @@ def build(cfg):
     depth_predictor = DepthPredictor(cfg)
 
     # visual encoder and text-guided adapter and grounding encoder
-    LM2CNet_trans = build_LM2CNet_trans(cfg)
+    mono3dvg_trans = build_LM2CNet_trans(cfg)
 
-    # LM2CNet
-    model = LM2CNet(
+    # Mono3DVG
+    model = Mono3DVG(
         backbone,
-        LM2CNet_trans,
+        mono3dvg_trans,
         depth_predictor,
         num_classes=cfg['num_classes'],
         num_queries=cfg['num_queries'],
