@@ -29,7 +29,7 @@
 
 
 ## Highlight!!!!
-This repo is the implementation of "OVGNet: An Unified Visual-Linguistic Framework for Open-Vocabulary Robotic Grasping". we refer to [Mono3DVG](https://github.com/ZhanYang-nwpu/Mono3DVG), [MonoDETR](https://github.com/ZrrSkywalker/MonoDETR), [nuScenes](https://github.com/nutonomy/nuscenes-devkit), [DriveLM](https://github.com/OpenDriveLab/DriveLM). Many thanks to these excellent repos.https://github.com/nutonomy/nuscenes-devkit
+This repo is the implementation of "LM2CNet: Enhancing Monocular 3D Visual Grounding with Language Guided Multi-Modality Coupling Network". we refer to [Mono3DVG](https://github.com/ZhanYang-nwpu/Mono3DVG), [MonoDETR](https://github.com/ZrrSkywalker/MonoDETR), [nuScenes](https://github.com/nutonomy/nuscenes-devkit), [DriveLM](https://github.com/OpenDriveLab/DriveLM). Many thanks to these excellent repos.https://github.com/nutonomy/nuscenes-devkit
 
 ## TODO
 - [x] Release test_dataset
