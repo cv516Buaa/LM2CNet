@@ -2,7 +2,7 @@ random_seed: 666
 
 dataset:
   type: &dataset_type 'LM2CNet'
-  root_dir: '/media/lm/lmssd/1A_3dvg'
+  root_dir: 'your/path'
   train_split: 'train'
   val_split: 'val'
   test_split: 'test'
@@ -97,11 +97,11 @@ trainer:
   save_frequency: 1    # checkpoint save interval (in epoch)
   resume_model: False
 #  pretrain_model: None
-  save_path: 'outputs/nuscnes_bs40_lr1/'
+  save_path: 'outputs/'
 
 tester:
   type: *dataset_type
   checkpoint: 195  # the start ckpt epoch for 'all'
   threshold: 0.0  # confidence filter
   topk: 1
-  pretrain_model: '/media/lm/lmssd/checkpoint_best.pth'
+  pretrain_model: 'checkpoint_best.pth'
