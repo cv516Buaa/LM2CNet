@@ -46,8 +46,10 @@ This repo is the implementation of "LM2CNet: Enhancing Monocular 3D Visual Groun
 * Bert_Pretrain==[assets](https://drive.google.com/file/d/1ee-XVDnqTNj3tBqgc1S2WLFEMY2dv2iU/view?usp=drive_link)
 
 
-**please add the Bert_Pretrain into ./roberta-base folder**
-**please add the checkpoint into ./config folder**
+**Please add the Bert_Pretrain into ./roberta-base folder**
+
+
+**Please add the checkpoint into ./config folder**
 ```
 conda create -n LM2CNet python=3.10
 conda activate LM2CNet
@@ -65,6 +67,8 @@ bash make.sh
 ```
 ## Test on Mono3DRefer_nuScenes
 **please set the Test_Dataset path**
+
+
 **please set the checkpoint path**
 ```
 cd /LM2CNet
@@ -76,6 +80,8 @@ python test.py
 
 ## Dataset Construction
 **If you want to use chatgpt to automatically generate language description, we have provided a demo tool in folder /LM2CNet/datasets_construction for your reference.**
+
+
 **If you want to use DriveLM to indentify the nuScens object, we have provided a demo tool in folder /LM2CNet/datasets_construction for your reference.**
 
 ## Others
