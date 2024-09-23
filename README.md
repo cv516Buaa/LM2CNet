@@ -36,82 +36,41 @@ This repo is the implementation of "LM2CNet: Enhancing Monocular 3D Visual Groun
 - [x] Release checkpoints
 - [ ] Release all_dataset
 
-## Demo Setting
-* **Novel** indicates the **unseen** objects in training.
-* **Base** denotes the **seen** objects in training.
-* Battery and power drill are novel classes, which belong to hard task.
-* Apple and pear are base classes, which belong to simple task.
-
-      
-
-
-
-
-
-## Demo Video
-
-
-[Demo](https://github.com/cv516Buaa/OVGNet/assets/94512783/6a4a1f64-6c7f-4012-8774-60babf933290)
-
-
-## Dataset
-* [OVGrasping](https://pan.baidu.com/s/113wBIJ-hWnSJNkWlngPqAg?pwd=8667) follows GroundingDINO data format.
-* The OVGrapsing dataset comprises 117 categories and 63,385 instances.
-* Instances are sourced from three distinct origins: RoboRefIt, GraspNet, simulated environment.
-* The dataset is divided into two categories: the base category consists 51,857 instances, and the novel category comprises 11,528 instances. 
-
 ## Installation
 * Ubantu==18.04
-* Python==3.9 
-* Torch==1.11, Torchvision==0.12.0
+* Python==3.10 
+* Torch==1.12.1, Torchvision==0.12.0
 * CUDA==11.3
-* checkpoint==[OVGANet](https://pan.baidu.com/s/13j4XBza1LNzsh-5RSfdFiQ?pwd=f3md)
-* assets==[assets](https://pan.baidu.com/s/1vUestnCMZKZU5Kb2lC1LMA?pwd=uov1)
-
-**please add the assets into OVGNet folder**
-<br />
-**please ensure the CUDA version is 11.3**
+* checkpoint==[OVGANet](https://drive.google.com/file/d/1auMd9sOpYcAaIelJVKPOKvBYKic7yy4w/view?usp=drive_link)
+* Test_Dataset==[assets](https://drive.google.com/file/d/1a-U9jg_xd2BDMQk8Fk8hJqYBOYS9iv01/view?usp=drive_link)
+* Bert_Pretrain==[assets](https://drive.google.com/file/d/1ee-XVDnqTNj3tBqgc1S2WLFEMY2dv2iU/view?usp=drive_link)
+**please add the Bert_Pretrain into ./roberta-base folder**
+**please add the checkpoint into ./config folder**
 ```
-conda create -n OVGNet python=3.9
-conda activate OVGNet
-pip install torch==1.11.0+cu113 torchvision==0.12.0+cu113 torchaudio==0.11.0 --extra-index-url https://download.pytorch.org/whl/cu113
+conda create -n LM2CNet python=3.10
+conda activate LM2CNet
+pip install torch==1.12.1+cu113 torchvision==0.13.1+cu113 torchaudio==0.12.1 --extra-index-url https://download.pytorch.org/whl/cu113
 ```
-
 
 ```
-cd /OVGNet/
+cd /LM2CNet
 pip install -r requirments.txt
 ```
 
 ```
-cd graspnet/graspnet/pointnet2
-python setup.py install
-cd graspnet/graspnet/knn
-python setup.py install
-cd groundingdino
-pip install -e .
+cd /LM2CNet/lib/models/LM2CNet/ops
+bash make.sh
 ```
+## Test on Mono3DRefer_nuScenes
+**please set the Test_Dataset path**
+**please set the checkpoint path**
+```
+cd /LM2CNet
+python test.py
+```
+## Demo Video
 
-## Run
-```
-cd /OVGNet/
-python test.py --testing_case_dir ./test_cases/simple/apple --pretrain ./checkpoint/OVGANet
-```
+[Demo](https://github.com/user-attachments/assets/5f599374-d8fa-41aa-8177-828121851f18)
 
-## Test on OVGrasping
-```
-cd /OVGNet/test_vg/
-python test_vg.py --c ./config/cfg_odvg.py --datasets ./config/datasets_vg_example.json --pretrain_model_path  OVGNet/checkpoint/OVGANet
-```
-
-## Cite
-```
-@InProceedings{Li_2024_IROS,
-    author = {Li Meng and Zhao Qi and Lyu Shuchang and Wang Chunlei and Ma Yujing and Cheng Guangliang and Yang Chenguang},
-    title = {OVGNet: A Unified Visual-Linguistic Framework for Open-Vocabulary Robotic Grasping},
-    year = {2024},
-    eprint = {2407.13175},
-    archivePrefix = {arXiv},
-    primaryClass = {cs.RO},
-    url = {https://arxiv.org/abs/2407.13175}, 
-}
+## Dataset Construction
+**If you want to **
