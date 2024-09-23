@@ -44,6 +44,8 @@ This repo is the implementation of "LM2CNet: Enhancing Monocular 3D Visual Groun
 * checkpoint==[OVGANet](https://drive.google.com/file/d/1auMd9sOpYcAaIelJVKPOKvBYKic7yy4w/view?usp=drive_link)
 * Test_Dataset==[assets](https://drive.google.com/file/d/1a-U9jg_xd2BDMQk8Fk8hJqYBOYS9iv01/view?usp=drive_link)
 * Bert_Pretrain==[assets](https://drive.google.com/file/d/1ee-XVDnqTNj3tBqgc1S2WLFEMY2dv2iU/view?usp=drive_link)
+
+
 **please add the Bert_Pretrain into ./roberta-base folder**
 **please add the checkpoint into ./config folder**
 ```
@@ -70,7 +72,11 @@ python test.py
 ```
 ## Demo Video
 
-[Demo](https://github.com/user-attachments/assets/5f599374-d8fa-41aa-8177-828121851f18)
+[Demo](https://github.com/user-attachments/assets/ec805fb5-751c-46b3-b009-bc97c05e0c50)
 
 ## Dataset Construction
-**If you want to **
+**If you want to use chatgpt to automatically generate language description, we have provided a demo tool in folder /LM2CNet/datasets_construction for your reference.**
+**If you want to use DriveLM to indentify the nuScens object, we have provided a demo tool in folder /LM2CNet/datasets_construction for your reference.**
+
+## Others
+**If you have any problems, please contact me limenglm@buaa.edu.cn**
