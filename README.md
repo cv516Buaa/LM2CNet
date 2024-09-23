@@ -29,7 +29,7 @@
 
 
 ## Highlight!!!!
-This repo is the implementation of "LM2CNet: Enhancing Monocular 3D Visual Grounding with Language Guided Multi-Modality Coupling Network". we refer to [Mono3DVG](https://github.com/ZhanYang-nwpu/Mono3DVG), [MonoDETR](https://github.com/ZrrSkywalker/MonoDETR), [nuScenes](https://github.com/nutonomy/nuscenes-devkit), [DriveLM](https://github.com/OpenDriveLab/DriveLM). Many thanks to these excellent repos.https://github.com/nutonomy/nuscenes-devkit
+This repo is the implementation of "LM2CNet: Enhancing Monocular 3D Visual Grounding with Language Guided Multi-Modality Coupling Network". we refer to [Mono3DVG](https://github.com/ZhanYang-nwpu/Mono3DVG), [MonoDETR](https://github.com/ZrrSkywalker/MonoDETR), [nuScenes](https://github.com/nutonomy/nuscenes-devkit), [DriveLM](https://github.com/OpenDriveLab/DriveLM). Many thanks to these excellent repos.
 
 ## TODO
 - [x] Release test_dataset
@@ -76,7 +76,7 @@ python test.py
 ```
 ## Demo Video
 
-[Demo](https://github.com/user-attachments/assets/ec805fb5-751c-46b3-b009-bc97c05e0c50)
+[Demo](https://github.com/user-attachments/assets/9e6e3e33-5ebb-4dd2-9f3f-83f46848e5e6)
 
 ## Dataset Construction
 **If you want to use chatgpt to automatically generate language description, we have provided a demo tool in folder /LM2CNet/datasets_construction for your reference.**
