@@ -11,9 +11,9 @@
     ·
     <a href="https://cv-shuchanglyu.github.io/EnHome.html"><strong>Shuchang Lyu</strong></a>
     ·
-    <strong>Chunlei Wang</strong></a>    
+    <strong>Jun Jiang</strong></a>    
     ·
-    <strong>Yujing Ma</strong></a>
+    <strong>Longhao Zou</strong></a>
     ·
     <a href="https://sites.google.com/view/guangliangcheng"><strong>Guangliang Cheng</strong></a>
     ·
