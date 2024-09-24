@@ -30,7 +30,6 @@ def find_max_iou_index(dict_list):
     max_iou = float('-inf')  # 初始化最大IOU值为负无穷
     max_index = -1  # 初始化最大值索引为-1
 
-    # 遍历列表中的每一个字典
     for index, dictionary in enumerate(dict_list):
         if 'IOU' in dictionary:
             current_iou = dictionary['IOU']
@@ -40,41 +39,24 @@ def find_max_iou_index(dict_list):
 
     return max_index
 def calculate_iou(box1, box2):
-    """
-    计算两个矩形框的IoU（Intersection over Union）。
-    矩形框以(x1, y1, x2, y2)的形式给出。
 
-    参数:
-    - box1: 矩形框1的坐标 (x1, y1, x2, y2)
-    - box2: 矩形框2的坐标 (x1, y1, x2, y2)
-
-    返回:
-    - iou: 两个矩形框的IoU值
-    """
-
-    # 获取两个矩形框的坐标
     x1_1, y1_1, x2_1, y2_1 = box1
     x1_2, y1_2, x2_2, y2_2 = box2
 
-    # 计算交集矩形的坐标
     xi1 = max(x1_1, x1_2)
     yi1 = max(y1_1, y1_2)
     xi2 = min(x2_1, x2_2)
     yi2 = min(y2_1, y2_2)
 
-    # 计算交集矩形的面积
     inter_width = max(0, xi2 - xi1)
     inter_height = max(0, yi2 - yi1)
     inter_area = inter_width * inter_height
-
-    # 计算每个矩形框的面积
+    
     box1_area = (x2_1 - x1_1) * (y2_1 - y1_1)
     box2_area = (x2_2 - x1_2) * (y2_2 - y1_2)
 
-    # 计算并集区域的面积
     union_area = box1_area + box2_area - inter_area
 
-    # 计算IoU
     iou = inter_area / union_area
 
     return iou
@@ -102,13 +84,13 @@ all = {'Cycle', 'Vehicle', 'Pedestrian', 'Others', 'Traffic element'}
 checked = ['Traffic element']
 all_data_info = []
 kitti_to_nu_lidar = Quaternion(axis=(0, 0, 1), angle=np.pi / 2)
-label_folder = os.path.join('/media/lm/Elements/3dvg_nus', 'trainval', 'label_2')
-calib_folder = os.path.join('/media/lm/Elements/3dvg_nus', 'trainval', 'calib')
-# image_folder = os.path.join('/media/lm/Elements/3dvg_nus', 'trainval', 'image_2')
-lidar_folder = os.path.join('/media/lm/Elements/3dvg_nus', 'trainval', 'velodyne')
-with open('/media/lm/Elements/1_3dvg/v1_0_train_nus.json', 'r') as f:
+label_folder = os.path.join('/media/3dvg_nus', 'trainval', 'label_2')
+calib_folder = os.path.join('/media/3dvg_nus', 'trainval', 'calib')
+# image_folder = os.path.join('/media/3dvg_nus', 'trainval', 'image_2')
+lidar_folder = os.path.join('/media/3dvg_nus', 'trainval', 'velodyne')
+with open('/media/v1_0_train_nus.json', 'r') as f:
     data = json.load(f)
-nusc = NuScenes(version='v1.0-trainval', dataroot='/media/lm/Elements/1_3dvg/nuscenes_full', verbose=True)
+nusc = NuScenes(version='v1.0-trainval', dataroot='/media/nuscenes_full', verbose=True)
 for i in data:
     for ii in data[i]['key_frames']:
         for iii in data[i]['key_frames'][ii]['key_object_infos']:
@@ -272,6 +254,6 @@ for i in data:
             else:
                 continue
 
-with open('/media/lm/Elements/3dvg_nus/trifical_all_data_info.json', 'w', encoding='utf-8') as f:
+with open('/media/all_data_info.json', 'w', encoding='utf-8') as f:
     json.dump(all_data_info, f, ensure_ascii=False, indent=4)
 ###########################################
